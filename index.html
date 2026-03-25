@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodSpot Pakistan - Authentic Restaurant Reviews</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Auth Screen -->
+    <div id="authScreen" class="auth-screen">
+        <div class="auth-card">
+            <h1>🍽️ FoodSpot Pakistan</h1>
+            <p class="subtitle">Discover Authentic Restaurant Reviews</p>
+            
+            <div id="signupFields" class="hidden">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="nameInput" placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label>City</label>
+                    <select id="cityInput">
+                        <option value="">Select your city</option>
+                        <option value="Islamabad">Islamabad</option>
+                        <option value="Rawalpindi">Rawalpindi</option>
+                        <option value="Lahore">Lahore</option>
+                        <option value="Karachi">Karachi</option>
+                        <option value="Attock">Attock</option>
+                        <option value="Peshawar">Peshawar</option>
+                        <option value="Multan">Multan</option>
+                        <option value="Faisalabad">Faisalabad</option>
+                        <option value="Quetta">Quetta</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="emailInput" placeholder="your@email.com">
+            </div>
+            
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="passwordInput" placeholder="••••••••">
+            </div>
+
+            <button class="btn btn-primary" id="authBtn" onclick="handleAuth()">
+                <span id="authBtnText">Sign In</span>
+            </button>
+
+            <div class="auth-toggle">
+                <span id="authToggleText">Don't have an account? </span>
+                <a onclick="toggleAuth()" id="authToggleLink">Sign Up</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="appScreen" class="hidden">
+        
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="logo">🍽️ FoodSpot</div>
+            <div class="nav-actions">
+                <button class="btn-add-review" onclick="openAddReviewModal()">+ Review</button>
+                <div class="user-info">
+                    <span id="userName" class="user-name-text"></span>
+                    <div class="avatar" id="userAvatar" onclick="toggleUserMenu()"></div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- User Dropdown Menu -->
+        <div id="userMenu" class="user-menu hidden">
+            <div class="menu-item" onclick="showMyProfile()">
+                <span>👤</span> My Profile
+            </div>
+            <div class="menu-item" onclick="showMyReviews()">
+                <span>📝</span> My Reviews
+            </div>
+            <div class="menu-item" onclick="logout()">
+                <span>🚪</span> Sign Out
+            </div>
+        </div>
+
+        <div class="app-container">
+            
+            <!-- Home View -->
+            <div id="homeView">
+                <!-- Search & Filters -->
+                <div class="search-section">
+                    <div class="search-bar">
+                        <input type="text" class="search-input" id="searchInput" 
+                               placeholder="🔍 Search restaurants..." 
+                               oninput="filterRestaurants()">
+                    </div>
+                    
+                    <div class="filter-row">
+                        <label class="filter-label">City:</label>
+                        <select id="cityFilter" class="filter-select" onchange="filterRestaurants()">
+                            <option value="all">All Cities</option>
+                            <option value="Islamabad">Islamabad</option>
+                            <option value="Rawalpindi">Rawalpindi</option>
+                            <option value="Lahore">Lahore</option>
+                            <option value="Karachi">Karachi</option>
+                            <option value="Attock">Attock</option>
+                            <option value="Peshawar">Peshawar</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-tags">
+                        <button class="filter-tag active" onclick="setFilter('all', this)">All</button>
+                        <button class="filter-tag" onclick="setFilter('Desi', this)">🍛 Desi</button>
+                        <button class="filter-tag" onclick="setFilter('BBQ', this)">🍖 BBQ</button>
+                        <button class="filter-tag" onclick="setFilter('Fast Food', this)">🍔 Fast Food</button>
+                        <button class="filter-tag" onclick="setFilter('Chinese', this)">🥡 Chinese</button>
+                        <button class="filter-tag" onclick="setFilter('Italian', this)">🍝 Italian</button>
+                        <button class="filter-tag" onclick="setFilter('Cafe', this)">☕ Cafe</button>
+                    </div>
+                </div>
+
+                <!-- Restaurant Grid -->
+                <div class="restaurant-grid" id="restaurantGrid">
+                    <div class="loading">Loading restaurants...</div>
+                </div>
+            </div>
+
+            <!-- Restaurant Detail View -->
+            <div id="detailView" class="hidden"></div>
+
+            <!-- My Profile View -->
+            <div id="profileView" class="hidden"></div>
+
+        </div>
+    </div>
+
+    <!-- Add Review Modal -->
+    <div class="modal-overlay hidden" id="addReviewModal" onclick="closeModalOnOverlay(event)">
+        <div class="modal">
+            <h2>Add Your Review</h2>
+            
+            <div class="form-group">
+                <label>Restaurant Name *</label>
+                <input type="text" id="restaurantName" placeholder="Enter restaurant name">
+            </div>
+
+            <div class="form-group">
+                <label>City *</label>
+                <select id="restaurantCity">
+                    <option value="">Select city</option>
+                    <option value="Islamabad">Islamabad</option>
+                    <option value="Rawalpindi">Rawalpindi</option>
+                    <option value="Lahore">Lahore</option>
+                    <option value="Karachi">Karachi</option>
+                    <option value="Attock">Attock</option>
+                    <option value="Peshawar">Peshawar</option>
+                    <option value="Multan">Multan</option>
+                    <option value="Faisalabad">Faisalabad</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Cuisine Type *</label>
+                <select id="cuisineType">
+                    <option value="Desi">🍛 Desi/Pakistani</option>
+                    <option value="BBQ">🍖 BBQ/Karahi</option>
+                    <option value="Fast Food">🍔 Fast Food</option>
+                    <option value="Chinese">🥡 Chinese</option>
+                    <option value="Italian">🍝 Italian</option>
+                    <option value="Turkish">🥙 Turkish</option>
+                    <option value="Arabic">🍢 Arabic</option>
+                    <option value="Cafe">☕ Cafe/Bakery</option>
+                    <option value="Street Food">🌮 Street Food</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Price Range *</label>
+                <select id="priceRange">
+                    <option value="₨">₨ Budget (Under 500)</option>
+                    <option value="₨₨">₨₨ Mid-Range (500-1500)</option>
+                    <option value="₨₨₨">₨₨₨ Fine Dining (1500+)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Your Rating *</label>
+                <div class="rating-input" id="ratingInput">
+                    <span class="rating-star" onclick="selectRating(1)">★</span>
+                    <span class="rating-star" onclick="selectRating(2)">★</span>
+                    <span class="rating-star" onclick="selectRating(3)">★</span>
+                    <span class="rating-star" onclick="selectRating(4)">★</span>
+                    <span class="rating-star" onclick="selectRating(5)">★</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Your Review *</label>
+                <textarea id="reviewText" placeholder="Share your experience... What did you order? How was the service?" rows="4"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Add Photos (Recommended for verification)</label>
+                <div class="image-upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                    <div id="uploadPrompt">
+                        <div style="font-size: 2rem; margin-bottom: 8px;">📸</div>
+                        <div style="color: #888;">Click to upload food photos</div>
+                        <div style="font-size: 0.8rem; color: #666; margin-top: 4px;">JPG, PNG (Max 5 photos)</div>
+                    </div>
+                    <div class="image-preview-grid hidden" id="imagePreviewGrid"></div>
+                </div>
+                <input type="file" id="fileInput" accept="image/*" multiple style="display: none;" onchange="handleFileSelect(event)">
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-secondary" onclick="closeAddReviewModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="submitReview()" style="width: auto;">
+                    Submit Review
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    
+    <!-- Firebase Config -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Main App -->
+    <script src="app.js"></script>
+</body>
+</html>
